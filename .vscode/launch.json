@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "AVR build and flash",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/${workspaceFolderBasename}.elf",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "AVR Build",
+            "stopAtEntry": false,
+            "externalConsole": false,
+            "miDebuggerPath": "avr-gdb",
+            "postDebugTask": "AVR Flash"
+        }
+    ]
+}

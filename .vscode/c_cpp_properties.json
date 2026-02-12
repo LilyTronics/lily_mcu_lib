@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "AVR GCC",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${env:AVR_GCC_ROOT}/avr/include",
+                "${env:AVR_GCC_ROOT}/lib/gcc/avr/*/include"
+            ],
+            "defines": [
+                "F_CPU=16000000UL",
+                "__AVR_ATmega328PB__"
+            ],
+            "compilerPath": "${env:AVR_GCC_ROOT}/bin/avr-gcc.exe",
+            "cStandard": "gnu99"
+        }
+    ],
+    "version": 4
+}
