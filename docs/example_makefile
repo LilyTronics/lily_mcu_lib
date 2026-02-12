@@ -1,0 +1,52 @@
+# Set programmer options
+-include programmer.mk
+
+# Set MCU, F_CPU
+MCU = atmega328p
+F_CPU = 16000000UL
+
+# Output folder
+BUILD_DIR = build
+
+CC = avr-gcc
+OBJCOPY = avr-objcopy
+OBJDUMP = avr-objdump
+AVRDUDE = avrdude
+
+CFLAGS = -std=gnu99 -Wall -Os -mmcu=$(MCU) -DF_CPU=$(F_CPU)
+
+SRC = $(wildcard src/*.c)
+
+# Convert src/abc.c → build/abc.o
+OBJ = $(patsubst src/%.c, $(BUILD_DIR)/%.o, $(SRC))
+
+# Set target name to the project folder name
+TARGET = $(notdir $(CURDIR))
+
+# Default rule
+all: $(BUILD_DIR)/$(TARGET).hex
+
+# Create build folder if missing
+$(BUILD_DIR):
+	mkdir $(BUILD_DIR)
+
+# Object files
+$(BUILD_DIR)/%.o: src/%.c | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# ELF output
+$(BUILD_DIR)/$(TARGET).elf: $(OBJ)
+	$(CC) $(CFLAGS) $^ -o $@
+
+# HEX output
+$(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
+	$(OBJCOPY) -O ihex -R .eeprom $< $@
+	$(OBJDUMP) -Pmem-usage $<
+
+# Flash to AVR
+flash: $(BUILD_DIR)/$(TARGET).hex
+	$(AVRDUDE) -p $(MCU) $(PROG_OPTIONS) -U flash:w:$<:i
+
+# Clean rule
+clean:
+	rmdir /S /Q $(BUILD_DIR)
