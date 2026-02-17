@@ -4,6 +4,9 @@
 # Set MCU, F_CPU
 MCU = atmega328p
 F_CPU = 16000000UL
+LOW_FUSE = 0xFF
+HIGH_FUSE = 0xD7
+EXT_FUSE = 0xFC
 
 # Output folder
 BUILD_DIR = build
@@ -46,6 +49,10 @@ $(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
 # Flash to AVR
 flash: $(BUILD_DIR)/$(TARGET).hex
 	$(AVRDUDE) -p $(MCU) $(PROG_OPTIONS) -U flash:w:$<:i
+
+# Burn fuse bits
+fuses:
+	$(AVRDUDE) -p $(MCU) $(PROG_OPTIONS) -v -U lfuse:w:$(LOW_FUSE):m -U hfuse:w:$(HIGH_FUSE):m -U efuse:w:$(EXT_FUSE):m
 
 # Clean rule
 clean:
